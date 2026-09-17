@@ -53,6 +53,9 @@ Then:
 python -m pip install -e ".[geometry,ml,dev]"
 ```
 
+If you prefer a conventional requirements file, install the complete workflow
+environment with `python -m pip install -r requirements.txt`.
+
 ## Full workflow instructions
 
 ### 1. Install the project

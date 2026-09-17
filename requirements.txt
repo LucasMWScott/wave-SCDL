@@ -1,0 +1,40 @@
+# Complete development environment for the coastal-wave workflow.
+# The canonical dependency definitions live in pyproject.toml.
+# For editable installation, prefer: python -m pip install -e ".[geometry,ml,notebooks,dev]"
+
+numpy>=1.24
+pandas>=2
+PyYAML>=6
+
+# Geometry and geospatial processing
+scipy>=1.10
+scikit-image>=0.21
+pyproj>=3.6
+xarray>=2023.1
+netCDF4>=1.6
+
+# Training and evaluation
+torch>=2.2
+scikit-learn>=1.3
+matplotlib>=3.8
+torch-optimizer>=0.3
+optuna>=3.6
+
+# Notebooks and analysis
+jupyterlab
+ipykernel
+nbclient
+nbformat
+captum>=0.7
+shap>=0.46
+umap-learn>=0.5
+contextily>=1.6
+xyzservices>=2024.6
+metocean-stats
+seaborn
+statsmodels
+
+# Development checks
+pytest>=8
+ruff>=0.9
+build
