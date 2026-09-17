@@ -23,6 +23,16 @@ For more help, please contact lucas.scott@rogers.com.
 | Evaluation | Restore a checkpoint and write predictions and metrics | `python -m coastal_wave evaluate` |
 | Analysis | Inspect data, model behavior, and evaluation outputs in notebooks | `jupyter lab` |
 
+## Model overview
+
+The model combines offshore wave and wind histories with optional static
+coastal geometry and bathymetry patches before predicting site-level wave
+conditions.
+
+<p align="center">
+  <img src="docs/images/full_arch.png" width="820" alt="Coastal wave downscaling model architecture">
+</p>
+
 ## Install
 
 Python 3.10 or newer is required; validation used Python 3.12 with CPU PyTorch 2.5.1. From a WSL terminal in this directory:
@@ -128,6 +138,10 @@ If you want to run training or inference on non-NORA data, follow the same proce
 
 It is easy to create a script to automatically generate sites.yaml configs using a downloaded list of offshore + nearshore data points.
 
+<p align="center">
+  <img src="docs/images/wavewind_sites.png" width="360" alt="Example NORA3 wave and wind source locations">
+</p>
+
 
 ### 4. Choose preprocessing settings
 
@@ -153,6 +167,11 @@ python -m coastal_wave geometry --sites configs/my_sites.yaml --preprocess-confi
 
 Confirm that the generated path matches `data.static_features_csv` in `configs/my_training.yaml`. `master_static_features.csv` has one row per nearshore site. Check the logged reachable-site count before training.
 
+<p align="center">
+  <img src="docs/images/path_routing.png" width="500" alt="Example local multi-source curtain routing">
+  <img src="docs/images/ray_cast1_cut.png" width="390" alt="Example rays cast from coastal sites">
+</p>
+
 ### 6. Build optional bathymetry patches
 
 Skip this step when `data.use_bathymetry: false`. When it is true, build patches after geometry and set the resulting NPZ path in the training configuration where required by your run:
@@ -162,6 +181,12 @@ python -m coastal_wave bathy-patches --sites configs/my_sites.yaml --preprocess-
 ```
 
 For inference at new sites, reuse the training patch normalization with `--normalization-reference data/processed/my_run/point_centric_X_bathy.npz`; do not fit bathymetry statistics from new-site data.
+
+<p align="center">
+  <img src="docs/images/bathy_patch_singular1.png" width="170" alt="Example bathymetry patch one">
+  <img src="docs/images/bathy_patch_singular2.png" width="170" alt="Example bathymetry patch two">
+  <img src="docs/images/bathy_patch_singular3.png" width="170" alt="Example bathymetry patch three">
+</p>
 
 ### 7. Build the point-centric dataset
 
