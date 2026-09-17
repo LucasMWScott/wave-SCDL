@@ -4,7 +4,9 @@ Generate site-level coastal geometry and train a coastal-conditioned wave model 
 
 > **Research code.** This repository contains the reproducible software workflow, not the NORA3/NORAC observations, bathymetry files, or trained models used in the research runs.
 
-For more help, please contact lucas.scott@rogers.com.
+For more help, please contact lucas.scott@rogers.com. 
+
+Example project data, including nearshore, offshore, and bathymetry data, used for working examples are available upon request.
 
 ## Contents
 
