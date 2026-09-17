@@ -1,0 +1,42 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "coastal-wave-downscaling"
+version = "0.1.0"
+description = "Geometry and coastal wave downscaling research workflows"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+keywords = ["coastal", "wave", "downscaling", "bathymetry", "machine-learning"]
+dependencies = ["numpy>=1.24", "pandas>=2", "PyYAML>=6"]
+
+[project.optional-dependencies]
+geometry = ["scipy>=1.10", "scikit-image>=0.21", "pyproj>=3.6", "xarray>=2023.1", "netCDF4>=1.6"]
+ml = ["torch>=2.2", "scikit-learn>=1.3", "scipy>=1.10", "matplotlib>=3.8", "torch-optimizer>=0.3", "optuna>=3.6", "pyproj>=3.6"]
+notebooks = ["jupyterlab", "ipykernel", "nbclient", "nbformat", "captum>=0.7", "shap>=0.46", "umap-learn>=0.5", "contextily>=1.6", "xyzservices>=2024.6", "metocean-stats", "seaborn", "statsmodels"]
+dev = ["pytest>=8", "ruff>=0.9", "build"]
+
+[project.scripts]
+coastal-wave = "coastal_wave.cli:main"
+
+[tool.setuptools]
+py-modules = ["point_centric_normalize", "preprocess_normalize"]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["src*", "coastal_wave*", "geometric_builder*", "tuning*", "notebooks*"]
+exclude = ["notebooks.src*"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["F821", "F822", "E9"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.setuptools.package-data]
+"coastal_wave.resources" = ["*.yaml"]

@@ -1,0 +1,12 @@
+{
+  "exact_equal": [
+    "master.csv",
+    "rays.csv",
+    "normalized.csv",
+    "forward.npz",
+    "processed\\point_centric_X_dynamic.npz",
+    "processed\\point_centric_X_dynamic_sources.npz",
+    "processed\\point_centric_Y_targets.npz"
+  ],
+  "state_dict_keys_equal": true
+}

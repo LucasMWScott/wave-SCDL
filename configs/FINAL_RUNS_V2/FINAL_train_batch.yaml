@@ -1,0 +1,5 @@
+name: final_training_cases
+stop_on_error: true
+cases:
+- 16_cnn5chan_highres.yaml
+path_base: config

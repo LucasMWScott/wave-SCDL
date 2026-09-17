@@ -1,0 +1,222 @@
+study:
+  name: transformer_thesis_static_tuning_v2
+  direction: minimize
+  storage: ../tuning/results/transformer_thesis_static_tuning_v2.db
+  load_if_exists: true
+n_trials: 100
+timeout: null
+sampler:
+  type: TPESampler
+  seed: 42
+  n_startup_trials: 12
+  multivariate: false
+  group: false
+pruner:
+  type: MedianPruner
+  n_startup_trials: 6
+  n_warmup_steps: 3
+  interval_steps: 1
+objective:
+  metric: val_loss
+  mode: min
+training_loop:
+  epochs_per_trial: 8
+  max_train_batches: 80
+  max_val_batches: 20
+  validation_every_n_epochs: 1
+  gradient_clip_norm: 1.0
+  early_stop_patience: 5
+  dataloader:
+    num_workers: 6
+    pin_memory: true
+trial_overrides:
+  training:
+    progress_bar:
+      enabled: true
+      train: false
+      val: false
+logging:
+  epoch_interval: 1
+  show_sampled_params: true
+  output_dir: ../tuning/results
+search_groups:
+  data:
+    enabled: true
+  optimizer:
+    enabled: true
+  transformer:
+    enabled: true
+    requires:
+    - path: model.coastal_transformer.sequence_encoder.type
+      equals: transformer
+  static_branch:
+    enabled: true
+    requires:
+    - path: data.use_static_features
+      equals: true
+  bathy_cnn:
+    enabled: false
+    requires:
+    - path: data.use_bathymetry
+      equals: true
+    - path: model.coastal_transformer.bathy.enabled
+      equals: true
+search_space:
+  sequence_window:
+    group: data
+    type: categorical
+    choices:
+    - 42
+    - 48
+    - 54
+    - 60
+    paths:
+    - data.sequence_window
+  batch_size:
+    group: optimizer
+    type: categorical
+    choices:
+    - 384
+    - 512
+    - 640
+    - 768
+    path: training.batch_size
+  learning_rate:
+    group: optimizer
+    type: float
+    low: 0.0005
+    high: 0.0018
+    log: true
+    paths:
+    - training.optimizer.lr
+    - training.optimizer.lr
+  weight_decay:
+    group: optimizer
+    type: float
+    low: 7.5e-05
+    high: 0.0005
+    log: true
+    paths:
+    - training.optimizer.weight_decay
+  gradient_clip_norm:
+    group: optimizer
+    type: categorical
+    choices:
+    - 0.75
+    - 1.0
+    - 1.25
+    - 1.5
+    path: training.gradient_clip_norm
+  scheduler_min_lr:
+    group: optimizer
+    type: float
+    low: 1.0e-06
+    high: 8.0e-06
+    log: true
+    paths:
+    - training.scheduler.cosine.min_lr
+    - training.scheduler.plateau.min_lr
+  model_dim:
+    group: transformer
+    type: categorical
+    choices:
+    - 96
+    - 120
+    - 144
+    - 168
+    - 192
+    paths:
+    - model.coastal_transformer.sequence_encoder.transformer.model_dim
+  num_layers:
+    group: transformer
+    type: categorical
+    choices:
+    - 2
+    - 3
+    - 4
+    - 5
+    paths:
+    - model.coastal_transformer.num_layers
+    - model.coastal_transformer.sequence_encoder.transformer.num_layers
+  num_heads:
+    group: transformer
+    type: categorical
+    choices:
+    - 6
+    paths:
+    - model.coastal_transformer.num_heads
+    - model.coastal_transformer.sequence_encoder.transformer.num_heads
+  ff_multiplier:
+    group: transformer
+    type: categorical
+    choices:
+    - 3.5
+    - 4.0
+    - 4.5
+    - 5.0
+    - 5.5
+    paths:
+    - model.coastal_transformer.ff_multiplier
+    - model.coastal_transformer.sequence_encoder.transformer.ff_multiplier
+  attn_dropout:
+    group: transformer
+    type: categorical
+    choices:
+    - 0.0
+    - 0.025
+    - 0.05
+    - 0.075
+    - 0.1
+    - 0.125
+    - 0.15
+    paths:
+    - model.coastal_transformer.attn_dropout
+    - model.coastal_transformer.sequence_encoder.transformer.attn_dropout
+  ff_dropout:
+    group: transformer
+    type: categorical
+    choices:
+    - 0.0
+    - 0.025
+    - 0.05
+    - 0.075
+    - 0.1
+    paths:
+    - model.coastal_transformer.ff_dropout
+    - model.coastal_transformer.sequence_encoder.transformer.ff_dropout
+  task_dropout:
+    group: transformer
+    type: categorical
+    choices:
+    - 0.25
+    - 0.3
+    - 0.35
+    - 0.4
+    - 0.45
+    path: model.coastal_transformer.task_dropout
+  static_hidden_dims:
+    group: static_branch
+    type: int_list
+    choices:
+    - - 128
+    - - 160
+    - - 192
+    - - 224
+    - - 256
+    - - 192
+      - 96
+    - - 224
+      - 112
+    path: model.coastal_transformer.static_branch.hidden_dims
+  static_dropout:
+    group: static_branch
+    type: categorical
+    choices:
+    - 0.05
+    - 0.1
+    - 0.15
+    - 0.2
+    - 0.25
+    - 0.3
+    path: model.coastal_transformer.static_branch.dropout
+path_base: config

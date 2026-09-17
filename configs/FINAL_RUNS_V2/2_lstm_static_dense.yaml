@@ -1,0 +1,548 @@
+data:
+  sites_config: ../sites.yaml
+  static_features_csv: ../../data/processed/master_static_features.csv
+  use_offshore_wind_features: true
+  use_local_wind_features: true
+  static_ignore_site_metadata: true
+  static_ignore_columns:
+  - site_lon
+  - site_lat
+  - site_x
+  - site_y
+  - site_row
+  - site_col
+  - reachable
+  use_static_features: true
+  use_bathymetry: false
+  use_geometry: true
+  bathymetry_shuffle: none
+  bathymetry_train_jitter_cells: 2
+  bathymetry_noise_std: 0.03
+  point_centric_dir: ../../data/processed/thesis_set_full_v3
+  date_range:
+    enabled: true
+    start: '2020-01-01'
+    end: '2022-12-31'
+  sequence_window: 30
+  num_workers: 6
+  pin_memory: true
+  output_columns:
+  - hs
+  - tp
+  - dir_sin
+  - dir_cos
+  - dp_sin
+  - dp_cos
+  sample_filter:
+    enabled: true
+    apply_to_splits:
+    - train
+    - val
+    - test
+    hs_min: 0.0
+    tp_min: 3.0
+    match: all
+    statistic: target_timestep
+  train_sample_subsampling:
+    enabled: true
+    fraction: 0.1
+    seed: 42
+    mode: per_site
+    validate_sequence_continuity: true
+    validation_samples: 1000
+  train_sites: []
+  validation_sites:
+  - norac_grid_111
+  - norac_grid_68
+  - norac_grid_65
+  - norac_grid_38
+  - norac_grid_46
+  - norac_grid_44
+  - norac_grid_93
+  - norac_grid_137
+  - norac_grid_125
+  - norac_grid_144
+  - norac_grid_163
+  - norac_grid_176
+  - norac_grid_220
+  - norac_grid_187
+  - norac_grid_310
+  - norac_grid_326
+  - norac_grid_295
+  - norac_grid_202
+  - norac_grid_245
+  - norac_grid_227
+  - norac_grid_235
+  - norac_grid_157
+  - norac_grid_153
+  - norac_grid_294
+  - norac_grid_179
+  - norac_grid_36
+  - norac_grid_43
+  - norac_grid_183
+  - norac_grid_190
+  - norac_grid_192
+  test_sites:
+  - norac_grid_117
+  - norac_grid_71
+  - norac_grid_32
+  - norac_grid_64
+  - norac_grid_25
+  - norac_grid_88
+  - norac_grid_103
+  - norac_grid_123
+  - norac_grid_131
+  - norac_grid_160
+  - norac_grid_178
+  - norac_grid_334
+  - norac_grid_321
+  - norac_grid_304
+  - norac_grid_289
+  - norac_grid_253
+  - norac_grid_261
+  - norac_grid_247
+  - norac_grid_223
+  - norac_grid_236
+  - norac_grid_198
+  - norac_grid_286
+  - norac_grid_285
+  - norac_grid_283
+  - norac_grid_284
+  - norac_grid_282
+  - norac_grid_104
+  - norac_grid_139
+  - norac_grid_209
+  - norac_grid_273
+  multi_source:
+    enabled: true
+    source_type: nora3_wave
+    k_nearest: 3
+    max_distance_km_warn: 80
+    max_distance_km_error: 150
+    weight_power: 1.0
+    allow_padding: false
+  targets:
+    mode: transfer
+    transfer_reference: weighted_partitioned
+    transfer_representation: legacy
+    eps: 0.001
+    max_tp_delta: 15.0
+    tp_min: 0.5
+    tp_max: 30.0
+    physical_loss_weight: 1.0
+    transfer_loss_weight: 1.0
+    residual_correction:
+      enabled: false
+      hs_form: log_ratio
+      tp_form: additive
+      direction_form: circular_additive
+      dp_form: circular_additive
+      eps_hs: 0.001
+      bound_method: tanh
+      max_abs_log_hs: 1.25
+      max_abs_tp: 15.0
+      max_abs_dir_deg: 120.0
+      max_abs_dp_deg: 120.0
+      zero_init_output_head: true
+  static_regularization:
+    enabled: true
+    noise:
+      enabled: true
+      std: 0.0
+      apply_after_standardization: true
+      train_only: true
+    group_dropout:
+      enabled: true
+      p: 0.2
+      train_only: true
+      mode: per_sample
+      replacement_value: 0.0
+      groups:
+        route:
+          prefixes:
+          - path_
+          - static_tortuosity
+          - static_signed_curvature
+          - static_net_deflection
+          - static_final_approach
+          - funneling
+          - choke
+          - bottleneck
+        porosity_local:
+          prefixes:
+          - static_porosity
+          - static_dist_to_coast
+          - static_local_depth
+          - static_nearest_shore
+        ray_fetch:
+          prefixes:
+          - ray_fetch
+          - fetch_
+          - open_sector
+        ray_bathy:
+          prefixes:
+          - ray_max_slope
+          - ray_max_laplacian
+          - ray_min_depth
+        fjordness:
+          prefixes:
+          - fjordness
+          - site_regime
+        path_ratios:
+          prefixes:
+          - path_direct
+          - path_tortuosity_ratio
+          - bottleneck_to_fetch
+          - funneling_log
+  offshore_vars:
+  - hs
+  - tp
+  - tm1
+  - tm2
+  - tmp
+  - Pdir
+  - thq
+  - hs_sea
+  - tp_sea
+  - thq_sea
+  - hs_swell
+  - tp_swell
+  - thq_swell
+  - wind_speed_10m
+  - wind_direction_10m
+  nearshore_vars:
+  - hs
+  - tp
+  - dir
+  - dp
+  direction_vars:
+  - Pdir
+  - thq
+  - thq_sea
+  - thq_swell
+  - wind_direction_10m
+  - dir
+  - dp
+  seq_len: 30
+  static_ablation_config: ../ablation.yaml
+logging:
+  output_dir: ../../results/FINAL_RESULTS_V2/2_lstm_static_dense
+  checkpoint_name: cp_2_lstm_static_dense.pt
+  log_every_n_steps: 2
+model:
+  architecture: coastal_transformer
+  coastal_transformer:
+    sequence_encoder:
+      type: lstm
+      transformer:
+        model_dim: 168
+        num_layers: 2
+        num_heads: 6
+        ff_multiplier: 2.0
+        attn_dropout: 0.2
+        ff_dropout: 0.1
+        rope_base: 10000.0
+        use_sdpa: true
+      lstm:
+        hidden_dim: 216
+        num_layers: 1
+        bidirectional: false
+        dropout: 0.15
+        pooling: attention
+        layer_norm: true
+    static_branch:
+      hidden_dims:
+      - 128
+      dropout: 0.2
+    decoder:
+      type: dense
+    task_dropout: 0.2
+    rope_base: 10000.0
+    use_sdpa: true
+    num_tp_bins: 32
+    num_dp_bins: 36
+    hybrid_input_aliases:
+      tp:
+      - tp
+      - tp_swell
+      - tp_sea
+      dp:
+      - dp
+      - pdir
+      - dir
+      - thq
+      - thq_sea
+      - thq_swell
+    multi_source:
+      enabled: true
+      k_sources: 3
+      aggregation: attention
+      use_geometry_features: true
+      source_geometry_dim: auto
+    bathy:
+      enabled: false
+      version: v2
+      in_channels: 3
+      patch_size: 128
+      resolution_m: 50
+      channels:
+      - depth
+      - land_sea_mask
+      - slope_magnitude
+      shallow_breaking_depth_m: 5.0
+      conv_channels:
+      - 16
+      - 32
+      - 48
+      num_tokens: 4
+      dropout2d: 0.15
+      token_dropout: 0.25
+      branch_dropout: 0.25
+    experts:
+      enabled: false
+      combine_hs_energy_space: true
+      combine_direction_circular: true
+      combine_tp: energy_weighted
+    model_dim: 168
+    num_layers: 2
+    num_heads: 6
+    ff_multiplier: 2.0
+    attn_dropout: 0.2
+    ff_dropout: 0.1
+physics:
+  breaking:
+    enabled: false
+    mode: local_depth
+    cap_key: local_breaking_hs_cap
+    valid_key: local_breaking_cap_valid
+    penalty_weight: 0.15
+training:
+  seed: 55
+  deterministic: false
+  mixed_precision: true
+  amp: true
+  gradient_accumulation_steps: 1
+  batch_size: 128
+  epochs: 30
+  gradient_clip_norm: 0.75
+  sampler:
+    enabled: true
+    strategy: site_balanced
+    min_weight: 1.0
+    min_target_tp: 3.0
+    use_unscaled_hs: true
+    compare_signals: true
+    replacement: true
+    site_balanced:
+      replacement: true
+      train_only: true
+      min_samples_per_site: 1
+      combine_with_hs_weight: true
+      hs_power: 2.0
+      normalize_within_site: true
+  max_train_batches: null
+  max_val_batches: null
+  validation_every_n_epochs: 1
+  progress_bar:
+    enabled: true
+    train: true
+    val: true
+    leave: false
+    update_interval: 1
+  optimizer:
+    type: adamw
+    lr: 0.0009010616460530252
+    weight_decay: 0.0002828519813830661
+    betas:
+    - 0.9
+    - 0.999
+    eps: 1.0e-08
+    amsgrad: false
+    momentum: 0.9
+    dampening: 0.0
+    nesterov: false
+    alpha: 0.99
+    centered: false
+  pcgrad:
+    enabled: false
+  early_stopping:
+    enabled: true
+    patience: 8
+    min_delta: 0.0
+  selection:
+    monitor: val_loss
+    mode: min
+    weights:
+      hs_rmse: 8.0
+      tp_rmse: 1.0
+      direction_rmse_deg: 0.067
+      dp_rmse_deg: 0.067
+  loss:
+    type: blueprint_hybrid
+    reduction: mean
+    label_smoothing_sigma: 0.8
+    compute_physical_loss_on_reconstruction: true
+    log_components: true
+    mse:
+      reduction: mean
+    mae:
+      reduction: mean
+    huber:
+      delta: 0.5
+      reduction: mean
+    smooth_l1:
+      beta: 0.8
+      reduction: mean
+    angular:
+      pair_indices:
+      - dir
+      - dp
+      squared: true
+      reduction: mean
+    weighted_multitask:
+      weights:
+        hs: 0.5
+        tp: 0.2
+        direction: 0.1
+      base_regression_loss: huber
+      huber_delta: 0.2
+      smooth_l1_beta: 0.8
+      hs_extreme_threshold: 0.5
+      hs_extreme_penalty: 2.8
+      direction_pair_indices:
+      - dir
+      - dp
+      reduction: mean
+    coastal_multitask:
+      base_regression_loss: huber
+      huber_delta: 0.2
+      smooth_l1_beta: 0.8
+      direction_pair_indices:
+      - dir
+      - dp
+      direction_kappa:
+        dir: 4.0
+        dp: 4.0
+      kappa_trainable: true
+      include_log_i0: true
+      initial_uncertainty:
+        hs: 1.0
+        tp: 1.0
+        dir: 1.0
+        dp: 1.0
+      uncertainty_trainable: true
+      task_weights:
+        hs: 1.0
+        tp: 1.0
+        dir: 1.0
+        dp: 1.0
+      reduction: mean
+    blueprint_multitask:
+      huber_delta: 0.6
+      direction_pair_indices:
+      - dir
+      - dp
+      energy_weight_power: 2.0
+      energy_weight_epsilon: 0.0
+      normalize_energy_weights: true
+      weights:
+        hs: 2.0
+        tp: 3.5
+        dir: 1.0
+        dp: 1.0
+      reduction: mean
+    blueprint_hybrid:
+      huber_delta: 0.6
+      num_tp_bins: 32
+      num_dp_bins: 36
+      label_smoothing_sigma: 0.5
+      tp_bin_range:
+      - 0.0
+      - 25.0
+      dp_bin_range:
+      - 0.0
+      - 360.0
+      task_modes:
+        hs: regression
+        tp: classification
+        dir: regression
+        dp: classification
+      weights:
+        hs: 6.0
+        tp: 5.0
+        dir: 1.0
+        dp: 1.0
+      reduction: mean
+  scheduler:
+    type: cosine
+    step:
+      step_size: 25
+      gamma: 0.5
+      last_epoch: -1
+    cosine:
+      t_max: 20
+      min_lr: 1.108282595254549e-05
+      last_epoch: -1
+    plateau:
+      monitor: val_loss
+      mode: min
+      factor: 0.5
+      patience: 6
+      threshold: 0.001
+      threshold_mode: rel
+      cooldown: 0
+      min_lr: 1.108282595254549e-05
+      eps: 1.0e-08
+    min_lr: 1.108282595254549e-05
+  learning_rate: 0.0009010616460530252
+  weight_decay: 0.0002828519813830661
+save:
+  save_predictions_csv: true
+  save_predictions_nc: true
+normalization:
+  default_method: zscore
+  methods:
+    zscore:
+      description: 'Per-feature standard scaling: (x - mean) / std'
+      per_feature: true
+      store_stats: true
+    minmax:
+      description: Per-feature min-max scaling to feature_range
+      per_feature: true
+      feature_range:
+      - 0.0
+      - 1.0
+      store_stats: true
+    robust:
+      description: Per-feature robust scaling using median and IQR
+      per_feature: true
+      quantile_range:
+      - 25
+      - 75
+      store_stats: true
+    global_maxabs:
+      description: Divide all values by the global maximum absolute value
+      per_feature: false
+      store_stats: true
+    samplewise_l2:
+      description: Scale each sample (row) to unit L2 norm
+      per_feature: false
+      store_stats: false
+  apply_stage: before_tensor
+  stats_dir: experiments/normalization_stats
+  numeric_columns: null
+split:
+  train: 0.8
+  val: 0.2
+  test: 0.0
+  datetime_column: time
+  out_dir: experiments/preprocessed
+  save_tensors: false
+experiment:
+  base_config: smalltrans_v7_trial13.yaml
+  case_name: 2_lstm_static_dense
+  note: FINAL_RUNS_V2 case generated from exact smalltrans_v7_trial13.yaml base; only
+    controlled case switches changed.
+  description: LSTM with engineered static features, source geometry, local wind,
+    dense decoder; tests static effect relative to baseline.
+path_base: config

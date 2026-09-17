@@ -1,0 +1,52 @@
+bathy:
+  full_grid_path: ../data/processed/bathy/bathy_field_full.npz
+  composite_path: ../data/processed/bathy/bathy_field_full.npz
+  subgrid_name: bathy_field_project_site.npz
+  raw_dir: ../data/raw/bathy
+  padding_m: 3000
+  resolution_m: 50
+  epsg: 32633
+  version: v2
+  in_channels: 6
+  patch_size: 128
+  depth_clip_m: 120
+  max_snap_cells: 2
+  shallow_breaking_depth_m: 5
+  channels:
+  - depth
+  - land_sea_mask
+  - slope_magnitude
+  - distance_to_land
+  - curvature_laplacian
+  - shallow_breaking_mask
+static_features:
+  master_out_path: ../data/processed/master_static_features.csv
+  out_path: ../data/processed/master_static_features.csv
+  route_curtain:
+    mode: local_k_nearest
+    use_multi_source_config: true
+    padding_m: 2000
+    qa_out_path: ../data/processed/route_curtain_qa.csv
+  breaking:
+    enabled: true
+    gamma: 0.78
+wind_field:
+  out_path: ../data/processed/wind_field_nora3_10m.npz
+  method: idw
+  idw_power: 2
+  epsg: 32633
+paths:
+  sites_yaml: sites.yaml
+  processed_dir: ../data/processed
+circular:
+  auto_detect_dir: true
+  columns: []
+  input_degrees: true
+  drop_original: true
+  add_time_features: true
+  time:
+    datetime_column: time
+    month: true
+    day: true
+    hour: true
+path_base: config

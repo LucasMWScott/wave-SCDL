@@ -1,0 +1,57 @@
+enabled: false
+dropped_static_features: []
+feature_groups:
+  drop_groups: []
+group_definitions:
+  site_metadata:
+  - site_lat
+  - site_lon
+  - site_x
+  - site_y
+  - site_row
+  - site_col
+  - reachable
+  routing_core:
+  - path_length_m
+  - path_point_count
+  - snap_distance_m
+  - path_bottleneck_m
+  - funneling_ratio
+  - choke_out_ratio
+  - static_tortuosity_sum
+  - static_signed_curvature_deg
+  - static_net_deflection_deg
+  - static_final_approach_deg
+  - ray_hit_land_fraction
+  - ray_count
+  directional_fetch:
+  - ray_fetch_*
+  directional_bathymetry:
+  - ray_max_slope_*
+  - ray_max_laplacian_*
+  - ray_min_depth_*_m
+  porosity:
+  - static_porosity_*
+  fetch_anisotropy:
+  - fetch_max_over_mean
+  - fetch_std_m
+  - fetch_cv
+  - fetch_directional_entropy
+  - fetch_resultant_length
+  - open_sector_fraction
+  - closed_sector_fraction
+  - open_sector_width_deg
+  - dominant_fetch_direction_sin
+  - dominant_fetch_direction_cos
+  fjordness:
+  - fjordness_*
+  - site_regime_open
+  - site_regime_transition
+  - site_regime_fjord
+  path_ratios:
+  - path_direct_distance_m
+  - path_tortuosity_ratio
+  - bottleneck_to_path_ratio
+  - bottleneck_to_fetch_ratio
+  - funneling_log
+path_base: config

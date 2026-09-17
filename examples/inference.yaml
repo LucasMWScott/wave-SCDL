@@ -1,0 +1,10 @@
+# Supply actual external artifacts before running this research adapter.
+path_base: config
+checkpoint: ../results/run/model.pt
+training_config: ../configs/training.yaml
+preprocess_config: ../configs/preprocess.yaml
+sites_config: ../configs/sites.yaml
+nora3_params_dir: ../data/raw/nora3/params
+static_features_csv: ../data/processed/master_static_features.csv
+bathymetry_patches: ../data/processed/new_sites/point_centric_X_bathy.npz
+output_dir: ../results/inference
